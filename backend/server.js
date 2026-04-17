@@ -35,9 +35,9 @@ app.use('/enrollments', enrollmentRoutes);
 app.use('/dashboard',    dashboardRoutes);
 app.use('/certificates', certificateRoutes);
 
-// Default → login page
+// Default → landing page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/pages/login.html'));
+    res.sendFile(path.join(__dirname, '../frontend/pages/index.html'));
 });
 
 // ── Start ──────────────────────────────────────────────────────────────────────
