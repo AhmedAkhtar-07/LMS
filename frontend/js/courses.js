@@ -39,27 +39,32 @@ function buildCard(course) {
     if (currentUser.role === 'instructor') {
         return `
             <div class="course-card" onclick="window.location.href='/pages/course-modules.html?course_id=${course.course_id}'">
-                <h3>${escapeHtml(course.title)}</h3>
-                <p class="desc">${escapeHtml(course.description || 'No description.')}</p>
-                <p class="instructor">👤 ${escapeHtml(course.instructor_name)}</p>
-                <p class="card-link">View Modules →</p>
+                <div class="card-inner">
+                    <h3>${escapeHtml(course.title)}</h3>
+                    <p class="desc">${escapeHtml(course.description || 'No description provided.')}</p>
+                    <p class="instructor">By ${escapeHtml(course.instructor_name)}</p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-open" onclick="window.location.href='/pages/course-modules.html?course_id=${course.course_id}'">Manage Modules</button>
+                </div>
             </div>`;
     }
 
-    // Student: show "Open Course" if enrolled, otherwise show a hint to use a code
     const isEnrolled = enrolledIds.has(course.course_id);
     const action = isEnrolled
-        ? `<button class="btn-open" onclick="event.stopPropagation(); window.location.href='/pages/course-modules.html?course_id=${course.course_id}'">Open Course →</button>`
-        : `<span class="not-enrolled-hint">Use a code to join</span>`;
+        ? `<button class="btn-open" onclick="event.stopPropagation(); window.location.href='/pages/course-modules.html?course_id=${course.course_id}'">Open Course</button>`
+        : `<span class="not-enrolled-hint">Enter a code on dashboard to join</span>`;
 
     return `
         <div class="course-card ${isEnrolled ? 'enrolled' : ''}">
-            <div class="card-top">
-                <h3>${escapeHtml(course.title)}</h3>
-                ${isEnrolled ? '<span class="enrolled-badge">✓ Enrolled</span>' : ''}
+            <div class="card-inner">
+                <div class="card-top">
+                    <h3>${escapeHtml(course.title)}</h3>
+                    ${isEnrolled ? '<span class="enrolled-badge">Enrolled</span>' : ''}
+                </div>
+                <p class="desc">${escapeHtml(course.description || 'No description provided.')}</p>
+                <p class="instructor">By ${escapeHtml(course.instructor_name)}</p>
             </div>
-            <p class="desc">${escapeHtml(course.description || 'No description.')}</p>
-            <p class="instructor">👤 ${escapeHtml(course.instructor_name)}</p>
             <div class="card-actions">${action}</div>
         </div>`;
 }

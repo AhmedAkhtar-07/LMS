@@ -65,11 +65,11 @@ function renderCourses(courses) {
         if (c.certificate_id) {
             certBtn = `<a class="btn-cert view"
                           href="/pages/certificate.html?certificate_id=${c.certificate_id}"
-                          onclick="event.stopPropagation()">🎓 View Certificate</a>`;
+                          onclick="event.stopPropagation()">View Certificate</a>`;
         } else if (c.eligible) {
             certBtn = `<button class="btn-cert claim"
                                onclick="event.stopPropagation(); claimCertificate(${c.course_id}, this)">
-                           🏅 Claim Certificate
+                           Claim Certificate
                        </button>`;
         } else if (c.total_quizzes > 0) {
             certBtn = `<span class="cert-hint">${c.passed_quizzes}/${c.total_quizzes} quizzes passed</span>`;
@@ -81,7 +81,7 @@ function renderCourses(courses) {
             <div class="cp-top">
                 <div class="cp-info">
                     <div class="cp-title">${escapeHtml(c.title)}</div>
-                    <div class="cp-meta">👤 ${escapeHtml(c.instructor_name)}</div>
+                    <div class="cp-meta">By ${escapeHtml(c.instructor_name)}</div>
                 </div>
                 <div class="cp-stats">
                     <span class="cp-score">${scoreStr}</span>
@@ -147,7 +147,9 @@ function renderCertificates(certs) {
     document.getElementById('certsList').innerHTML = certs.map(c => `
         <div class="cert-row"
              onclick="window.location.href='/pages/certificate.html?certificate_id=${c.certificate_id}'">
-            <div class="cert-row-icon">🎓</div>
+            <div class="cert-row-icon">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#0d7a5f" stroke-width="2"/><path d="M7 10l2 2 4-4" stroke="#0d7a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
             <div class="cert-row-info">
                 <div class="cert-row-title">${escapeHtml(c.course_title)}</div>
                 <div class="cert-row-meta">Issued ${new Date(c.issue_date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>

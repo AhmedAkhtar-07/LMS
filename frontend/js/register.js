@@ -1,5 +1,13 @@
 // register.js — handles registration form
 
+// Pre-select role from landing page link (?role=student or ?role=instructor)
+const params = new URLSearchParams(window.location.search);
+const preRole = params.get('role');
+if (preRole) {
+    const roleSelect = document.getElementById('role');
+    if (roleSelect) roleSelect.value = preRole;
+}
+
 document.getElementById('registerForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 

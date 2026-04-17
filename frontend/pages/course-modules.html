@@ -7,25 +7,20 @@
     <link rel="stylesheet" href="/css/course-modules.css">
 </head>
 <body>
-
 <div class="page-wrapper">
-
     <nav class="navbar">
         <span class="nav-brand">LMS</span>
         <div class="nav-links">
             <a id="backLink" href="#">← Back to Dashboard</a>
         </div>
     </nav>
-
     <div class="content">
 
-        <!-- Course info header -->
         <div class="page-header">
-            <div>
+            <div class="course-title-block">
                 <h2 id="courseTitle">Loading...</h2>
                 <p id="courseDesc" class="course-desc"></p>
             </div>
-            <!-- Join code badge — shown only to instructors -->
             <div id="joinCodeBadge" style="display:none;" class="course-code-badge">
                 <span class="code-label">Join Code</span>
                 <span id="courseJoinCode" class="code-value">—</span>
@@ -33,20 +28,15 @@
             </div>
         </div>
 
-        <!-- Enrollment banner — shown to students who are not enrolled -->
         <div id="enrollBanner" class="enroll-banner" style="display:none;">
             <span>You are not enrolled in this course.</span>
             <button id="enrollBtn" class="btn-enroll-banner" onclick="enrollCourse()">Enroll Now</button>
         </div>
 
-        <!-- ── Add Module Form (instructor only) ── -->
+        <!-- Add Module Form (instructor only) -->
         <div id="addModuleSection" class="card" style="display:none;">
             <h3>Add New Module</h3>
-
-            <!-- enctype required for file upload -->
             <form id="addModuleForm" enctype="multipart/form-data">
-
-                <!-- Required fields -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="moduleTitle">Module Title <span class="required">*</span></label>
@@ -57,38 +47,37 @@
                         <input type="number" id="moduleOrder" placeholder="1" min="1" required>
                     </div>
                 </div>
-
-                <!-- Optional: PDF upload -->
                 <div class="form-group">
-                    <label for="pdfFile">
-                        Attach Document <span class="optional">(PDF, DOC, DOCX — max 10MB)</span>
-                    </label>
+                    <label for="pdfFile">Attach Document <span class="optional">(PDF, DOC, DOCX — max 10MB)</span></label>
                     <input type="file" id="pdfFile" name="pdf_file" accept=".pdf,.doc,.docx">
                 </div>
-
-                <!-- Optional: Video link -->
                 <div class="form-group">
-                    <label for="videoUrl">
-                        Video Link <span class="optional">(e.g. https://youtube.com/...)</span>
-                    </label>
+                    <label for="videoUrl">Video Link <span class="optional">(YouTube or any URL)</span></label>
                     <input type="url" id="videoUrl" placeholder="https://youtube.com/watch?v=...">
                 </div>
-
-                <!-- Optional: Announcement text -->
                 <div class="form-group">
-                    <label for="announcement">
-                        Announcement <span class="optional">(text notice for students)</span>
-                    </label>
+                    <label for="announcement">Announcement <span class="optional">(text notice for students)</span></label>
                     <textarea id="announcement" placeholder="Write an announcement..." rows="3" maxlength="1000"></textarea>
                 </div>
-
+                <div class="form-divider">
+                    <span>Quiz — Optional</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newQuizTitle">Quiz Title <span class="optional">(leave blank to skip)</span></label>
+                        <input type="text" id="newQuizTitle" placeholder="e.g. Module 1 Quiz" maxlength="200">
+                    </div>
+                    <div class="form-group form-group--small">
+                        <label for="newPassingScore">Pass Score <span class="optional">(%)</span></label>
+                        <input type="number" id="newPassingScore" placeholder="50" min="0" max="100" value="50">
+                    </div>
+                </div>
                 <button type="submit" class="btn-primary">Create Module</button>
             </form>
-
             <p class="msg" id="msg"></p>
         </div>
 
-        <!-- ── Enrolled Students (instructor only) ── -->
+        <!-- Enrolled Students (instructor only) -->
         <div id="enrolledSection" class="card" style="display:none;">
             <div class="enrolled-header" onclick="toggleEnrolledList()">
                 <h3>Enrolled Students <span id="enrolledCount"></span></h3>
@@ -97,9 +86,11 @@
             <div id="enrolledStudentList" style="display:none;"></div>
         </div>
 
-        <!-- ── Module List (both roles) ── -->
-        <div class="card">
-            <h3>Modules</h3>
+        <!-- Module List -->
+        <div class="modules-section">
+            <div class="modules-section-header">
+                <h3>Modules</h3>
+            </div>
             <div id="moduleList">
                 <p class="loading-text">Loading modules...</p>
             </div>
@@ -107,9 +98,7 @@
 
     </div>
 </div>
-
 <script src="/js/api.js"></script>
 <script src="/js/course-modules.js"></script>
-
 </body>
 </html>

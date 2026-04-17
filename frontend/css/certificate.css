@@ -1,99 +1,80 @@
-/* certificate.css — printable certificate page */
+/* certificate.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-    background: #f4f6f8;
-    font-family: 'Georgia', serif;
-    min-height: 100vh;
-}
+body { background: #f4faf7; font-family: 'Georgia', serif; min-height: 100vh; }
 
-/* ── Screen toolbar ── */
 .toolbar {
     display: flex; justify-content: space-between; align-items: center;
-    background: #1e40af; padding: 12px 32px;
+    background: #0d7a5f; padding: 13px 36px;
+    box-shadow: 0 2px 8px rgba(13,122,95,0.18);
 }
-
 .btn-back {
-    color: #bfdbfe; text-decoration: none; font-size: 14px;
-    font-family: sans-serif;
+    color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px;
+    font-family: 'Inter', sans-serif; font-weight: 500; transition: color 0.2s;
 }
 .btn-back:hover { color: #fff; }
-
 .btn-save {
-    padding: 8px 20px; background: #fff; color: #1e40af;
-    border: none; border-radius: 6px; font-size: 14px;
-    cursor: pointer; font-weight: 600; font-family: sans-serif;
+    padding: 8px 22px; background: #fff; color: #0d7a5f;
+    border: none; border-radius: 8px; font-size: 14px;
+    cursor: pointer; font-weight: 700; font-family: 'Poppins', sans-serif; transition: opacity 0.2s;
 }
-.btn-save:hover:not(:disabled) { background: #eff6ff; }
-.btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-save:hover:not(:disabled) { opacity: 0.9; }
+.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .screen-msg {
     text-align: center; padding: 60px 20px;
-    font-size: 15px; color: #6b7280; font-family: sans-serif;
+    font-size: 15px; color: #6b7280; font-family: 'Inter', sans-serif;
 }
 
-/* ── Certificate wrapper ── */
-.certificate {
-    max-width: 860px;
-    margin: 40px auto;
-    padding: 20px;
-}
+.certificate { max-width: 860px; margin: 40px auto; padding: 20px; }
 
-/* The bordered certificate */
 .cert-border {
     background: #fff;
-    border: 2px solid #1e40af;
+    border: 2px solid #0d7a5f;
     outline: 6px solid #fff;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.12);
-    padding: 48px 64px;
+    box-shadow: 0 4px 32px rgba(13,122,95,0.14);
+    padding: 52px 68px;
     position: relative;
     text-align: center;
 }
-
-/* Corner ornament via pseudo-elements */
 .cert-border::before, .cert-border::after {
     content: '✦';
     position: absolute;
-    font-size: 22px;
-    color: #1e40af;
-    opacity: 0.4;
+    font-size: 20px;
+    color: #0d7a5f;
+    opacity: 0.35;
 }
-.cert-border::before { top: 14px; left: 20px; }
-.cert-border::after  { bottom: 14px; right: 20px; }
+.cert-border::before { top: 16px; left: 22px; }
+.cert-border::after  { bottom: 16px; right: 22px; }
 
-/* Header */
-.cert-header {
-    display: flex; flex-direction: column; align-items: center;
-    margin-bottom: 24px; gap: 6px;
-}
+.cert-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 26px; gap: 6px; }
 .cert-logo   { font-size: 48px; line-height: 1; }
-.cert-issuer { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #6b7280; font-family: sans-serif; }
-
-/* Title */
-.cert-label {
-    font-size: 28px; font-weight: bold; color: #1e40af;
-    letter-spacing: 1px; margin-bottom: 32px;
-    border-bottom: 1px solid #dbeafe; padding-bottom: 20px;
+.cert-issuer {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: #6b7280; font-family: 'Inter', sans-serif; font-weight: 600;
 }
 
-/* Body copy */
+.cert-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px; font-weight: 800; color: #0d7a5f;
+    letter-spacing: 0.5px; margin-bottom: 32px;
+    border-bottom: 1px solid #d1fae5; padding-bottom: 22px;
+}
+
 .cert-body { margin-bottom: 40px; }
+.cert-presented  { font-size: 14px; color: #6b7280; margin-bottom: 14px; font-style: italic; }
+.cert-student    { font-family: 'Poppins', sans-serif; font-size: 36px; color: #0a0f0d; margin-bottom: 18px; font-weight: 800; }
+.cert-completed  { font-size: 14px; color: #6b7280; margin-bottom: 14px; font-style: italic; }
+.cert-course     { font-family: 'Poppins', sans-serif; font-size: 22px; color: #0d7a5f; margin-bottom: 14px; font-weight: 700; }
+.cert-instructor { font-size: 14px; color: #374151; font-family: 'Inter', sans-serif; }
 
-.cert-presented  { font-size: 14px; color: #6b7280; margin-bottom: 12px; font-style: italic; }
-.cert-student    { font-size: 36px; color: #111827; margin-bottom: 16px; font-weight: bold; }
-.cert-completed  { font-size: 14px; color: #6b7280; margin-bottom: 12px; font-style: italic; }
-.cert-course     { font-size: 22px; color: #1e3a8a; margin-bottom: 12px; font-weight: bold; }
-.cert-instructor { font-size: 14px; color: #374151; }
-
-/* Footer */
 .cert-footer {
     display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid #dbeafe; padding-top: 20px;
+    border-top: 1px solid #d1fae5; padding-top: 22px;
 }
 .cert-date-block, .cert-id-block { text-align: center; }
-.cert-date-value { font-size: 15px; font-weight: bold; color: #111827; margin-bottom: 4px; }
-.cert-date-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; font-family: sans-serif; }
-
-.cert-seal { font-size: 40px; color: #1e40af; opacity: 0.3; }
-
+.cert-date-value { font-size: 15px; font-weight: 700; color: #0a0f0d; margin-bottom: 4px; font-family: 'Poppins', sans-serif; }
+.cert-date-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #9ca3af; font-family: 'Inter', sans-serif; font-weight: 600; }
+.cert-seal { font-size: 38px; color: #0d7a5f; opacity: 0.25; }
