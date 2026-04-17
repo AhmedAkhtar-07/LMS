@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz — LMS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/quiz-view.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+    <nav class="navbar">
+        <span class="nav-brand">LMS</span>
+        <div class="nav-links">
+            <a id="backLink" href="#">← Back to Modules</a>
+        </div>
+    </nav>
+
+    <div class="content">
+
+        <!-- Quiz header info -->
+        <div class="quiz-header card">
+            <h2 id="quizTitle">Loading...</h2>
+            <p class="quiz-meta">Passing score: <span id="passingScore">—</span>%</p>
+        </div>
+
+        <!-- Questions — shown while attempting -->
+        <div id="quizBody">
+            <p class="loading-text">Loading questions...</p>
+        </div>
+
+        <!-- Submit button — hidden until questions load -->
+        <div id="submitSection" style="display:none;">
+            <button class="btn-submit" onclick="submitQuiz()">Submit Quiz</button>
+            <p class="msg" id="submitMsg"></p>
+        </div>
+
+        <!-- Result card — shown after submission -->
+        <div id="resultCard" class="card result-card" style="display:none;">
+            <div id="resultIcon" class="result-icon"></div>
+            <h3 id="resultTitle"></h3>
+            <p id="resultDetail" class="result-detail"></p>
+            <div class="result-score-box">
+                <span id="resultScore" class="score-big"></span>
+                <span class="score-label">Your Score</span>
+            </div>
+            <button class="btn-retry" onclick="retryQuiz()">Try Again</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/quiz-view.js"></script>
+</body>
+</html>

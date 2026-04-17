@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate — LMS</title>
+    <link rel="stylesheet" href="/css/certificate.css">
+</head>
+<body>
+
+<!-- Screen toolbar -->
+<div class="toolbar">
+    <a id="backBtn" href="/pages/student-dashboard.html" class="btn-back">← Dashboard</a>
+    <button class="btn-save" id="saveBtn" onclick="savePDF()" disabled>⏳ Loading...</button>
+</div>
+
+<!-- Loading / error states -->
+<div id="loadingMsg" class="screen-msg no-print">Loading certificate...</div>
+<div id="errorMsg"   class="screen-msg no-print" style="display:none; color:#dc2626;"></div>
+
+<!-- The certificate itself -->
+<div id="certificate" class="certificate" style="display:none;">
+
+    <div class="cert-border">
+
+        <div class="cert-header">
+            <div class="cert-logo">🎓</div>
+            <div class="cert-issuer">Online Learning Management System</div>
+        </div>
+
+        <div class="cert-label">Certificate of Completion</div>
+
+        <div class="cert-body">
+            <p class="cert-presented">This is to certify that</p>
+            <h1 class="cert-student" id="certStudent"></h1>
+            <p class="cert-completed">has successfully completed the course</p>
+            <h2 class="cert-course" id="certCourse"></h2>
+            <p class="cert-instructor">Instructed by <strong id="certInstructor"></strong></p>
+        </div>
+
+        <div class="cert-footer">
+            <div class="cert-date-block">
+                <div class="cert-date-value" id="certDate"></div>
+                <div class="cert-date-label">Date of Issue</div>
+            </div>
+            <div class="cert-seal">✦</div>
+            <div class="cert-id-block">
+                <div class="cert-date-value" id="certId"></div>
+                <div class="cert-date-label">Certificate ID</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/certificate.js"></script>
+</body>
+</html>

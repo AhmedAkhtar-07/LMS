@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Courses — LMS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/courses.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+    <nav class="navbar">
+        <span class="nav-brand">LMS</span>
+        <div class="nav-right">
+            <span class="nav-user">👤 <span id="userName"></span></span>
+            <a id="dashboardLink" href="#" class="nav-link">Dashboard</a>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="page-header">
+            <h2>Browse Courses</h2>
+            <p class="subtitle">Click a course to view its modules and content.</p>
+        </div>
+
+        <div id="courseGrid" class="course-grid">
+            <p class="loading-text">Loading courses...</p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/courses.js"></script>
+</body>
+</html>

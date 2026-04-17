@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard — LMS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/student-dashboard.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+    <nav class="navbar">
+        <span class="nav-brand">LMS</span>
+        <div class="nav-right">
+            <span class="nav-user">👤 <span id="userName"></span></span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+
+        <div class="section-header">
+            <h2>Welcome, <span id="welcomeName"></span></h2>
+        </div>
+
+        <!-- ── Summary stat cards ── -->
+        <div class="stat-grid" id="statGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="statCourses">—</div>
+                <div class="stat-label">Courses Enrolled</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-value" id="statProgress">—</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statAvg">—</div>
+                <div class="stat-label">Avg Quiz Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statQuizzes">—</div>
+                <div class="stat-label">Quizzes Attempted</div>
+            </div>
+        </div>
+
+        <!-- ── Join Course ── -->
+        <div class="join-box">
+            <div class="join-box-left">
+                <div class="join-icon">🔑</div>
+                <div>
+                    <h3>Join a Course</h3>
+                    <p>Enter the code given by your instructor</p>
+                </div>
+            </div>
+            <div class="join-form">
+                <input type="text" id="joinCodeInput" placeholder="e.g. AB3X7K"
+                       maxlength="8" autocomplete="off"
+                       oninput="this.value=this.value.toUpperCase()">
+                <button class="btn-join" onclick="joinCourse()">Join</button>
+            </div>
+            <p class="msg" id="joinMsg"></p>
+        </div>
+
+        <!-- ── My Courses with progress ── -->
+        <div class="dash-section">
+            <h3 class="section-title">My Courses</h3>
+            <div id="courseList">
+                <p class="loading-text">Loading...</p>
+            </div>
+        </div>
+
+        <!-- ── Recent Quiz Activity ── -->
+        <div class="dash-section" id="recentSection" style="display:none;">
+            <h3 class="section-title">Recent Quiz Activity</h3>
+            <div id="recentList"></div>
+        </div>
+
+        <!-- ── My Certificates ── -->
+        <div class="dash-section" id="certsSection" style="display:none;">
+            <h3 class="section-title">My Certificates</h3>
+            <div id="certsList"></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/student-dashboard.js"></script>
+</body>
+</html>
