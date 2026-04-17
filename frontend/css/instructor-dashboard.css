@@ -1,0 +1,95 @@
+/* instructor-dashboard.css */
+
+.page-wrapper { min-height:100vh; background:#f4f6f8; }
+
+/* Navbar */
+.navbar { display:flex; justify-content:space-between; align-items:center; background:#1e40af; padding:14px 32px; }
+.nav-brand { font-size:20px; font-weight:bold; color:#fff; letter-spacing:1px; }
+.nav-right  { display:flex; align-items:center; gap:16px; }
+.nav-user   { font-size:14px; color:#bfdbfe; }
+.btn-logout { padding:7px 16px; background:#ef4444; color:#fff; border:none; border-radius:5px; cursor:pointer; font-size:13px; }
+.btn-logout:hover { background:#dc2626; }
+
+/* Body */
+.dashboard { max-width:960px; margin:40px auto; padding:0 20px; display:flex; flex-direction:column; gap:28px; }
+
+/* ── Stat cards ── */
+.stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width:600px) { .stat-grid { grid-template-columns:1fr 1fr; } }
+
+.stat-card {
+    background:#fff; border-radius:8px; padding:20px; text-align:center;
+    box-shadow:0 1px 6px rgba(0,0,0,0.08); border-top:3px solid #e5e7eb;
+}
+.stat-card.highlight { border-top-color:#2563eb; }
+.stat-value { font-size:32px; font-weight:bold; color:#111827; line-height:1; margin-bottom:6px; }
+.stat-card.highlight .stat-value { color:#2563eb; }
+.stat-label { font-size:12px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* ── Section ── */
+.dash-section { display:flex; flex-direction:column; gap:0; }
+.section-header {
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;
+}
+.section-title { font-size:16px; color:#111827; font-weight:600; border-bottom:1px solid #e5e7eb; padding-bottom:8px; }
+
+.btn-primary {
+    padding:9px 20px; background:#2563eb; color:#fff;
+    text-decoration:none; border-radius:6px; font-size:14px;
+}
+.btn-primary:hover { background:#1d4ed8; }
+
+/* ── Course grid ── */
+.course-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; }
+
+.course-card {
+    background:#fff; border-radius:8px; box-shadow:0 1px 6px rgba(0,0,0,0.08);
+    border-left:4px solid #2563eb; overflow:hidden;
+    transition:box-shadow 0.15s, transform 0.15s;
+}
+.course-card:hover { box-shadow:0 4px 14px rgba(0,0,0,0.12); transform:translateY(-2px); }
+
+.card-body { padding:20px; cursor:pointer; }
+.card-body h3 { font-size:16px; color:#1e3a8a; margin-bottom:10px; }
+
+.card-meta-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.meta-chip {
+    font-size:12px; color:#374151; background:#f3f4f6;
+    padding:3px 10px; border-radius:12px;
+}
+
+.card-link { font-size:12px; color:#2563eb; font-weight:bold; }
+
+/* Join code bar */
+.join-code-bar {
+    display:flex; align-items:center; gap:8px; padding:10px 20px;
+    background:#f0f9ff; border-top:1px solid #dbeafe;
+}
+.join-label { font-size:11px; font-weight:bold; color:#6b7280; text-transform:uppercase; }
+.join-code  { font-size:16px; font-weight:bold; color:#1e40af; letter-spacing:3px; font-family:monospace; flex:1; }
+.btn-copy   { padding:3px 10px; background:#2563eb; color:#fff; border:none; border-radius:4px; font-size:11px; cursor:pointer; }
+.btn-copy:hover { background:#1d4ed8; }
+
+/* ── Analytics table ── */
+.analytics-table-wrap { overflow-x:auto; }
+
+.analytics-table { width:100%; border-collapse:collapse; font-size:13px; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,0.07); }
+
+.analytics-table thead tr { background:#f8fafc; }
+.analytics-table th {
+    text-align:left; padding:11px 16px;
+    font-size:11px; text-transform:uppercase; letter-spacing:0.5px;
+    color:#6b7280; border-bottom:2px solid #e5e7eb;
+}
+.analytics-table td { padding:12px 16px; border-bottom:1px solid #f3f4f6; color:#374151; }
+.analytics-table tr:last-child td { border-bottom:none; }
+.analytics-table tr:hover td { background:#f9fafb; }
+
+.course-name-cell { font-weight:500; color:#1e3a8a; }
+
+.pass-rate { font-weight:bold; padding:2px 8px; border-radius:10px; font-size:12px; }
+.pass-rate.good { background:#f0fdf4; color:#15803d; }
+.pass-rate.mid  { background:#fefce8; color:#a16207; }
+.pass-rate.poor { background:#fef2f2; color:#dc2626; }
+
+.loading-text, .empty-msg { font-size:14px; color:#9ca3af; }

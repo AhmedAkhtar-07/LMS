@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Quiz — LMS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/quiz-manage.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+    <nav class="navbar">
+        <span class="nav-brand">LMS</span>
+        <div class="nav-links">
+            <a id="backLink" href="#">← Back to Modules</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="page-header">
+            <h2 id="moduleTitle">Loading...</h2>
+            <p class="subtitle">Quiz Management</p>
+        </div>
+
+        <!-- Create Quiz form — shown only when no quiz exists yet -->
+        <div id="createQuizSection" class="card" style="display:none;">
+            <h3>Create Quiz</h3>
+            <form id="createQuizForm">
+                <div class="form-group">
+                    <label for="quizTitle">Quiz Title <span class="required">*</span></label>
+                    <input type="text" id="quizTitle" placeholder="e.g. Module 1 Quiz" maxlength="200" required>
+                </div>
+                <div class="form-group">
+                    <label for="passingScore">Passing Score % <span class="optional">(default: 50)</span></label>
+                    <input type="number" id="passingScore" placeholder="50" min="0" max="100" value="50">
+                </div>
+                <button type="submit" class="btn-primary">Create Quiz</button>
+            </form>
+            <p class="msg" id="createMsg"></p>
+        </div>
+
+        <!-- Quiz + Questions section — shown once quiz exists -->
+        <div id="quizSection" style="display:none;">
+
+            <!-- Quiz info header -->
+            <div class="card quiz-header-card">
+                <div class="quiz-info">
+                    <div>
+                        <h3 id="quizTitle">—</h3>
+                        <p class="quiz-meta">Passing score: <span id="passingScoreDisplay">—</span>%</p>
+                    </div>
+                    <button class="btn-danger" onclick="deleteQuiz()">Delete Quiz</button>
+                </div>
+            </div>
+
+            <!-- Add Question form -->
+            <div class="card">
+                <h3>Add Question</h3>
+                <form id="addQuestionForm">
+                    <div class="form-group">
+                        <label>Question Text <span class="required">*</span></label>
+                        <textarea id="questionText" placeholder="Enter the question..." rows="2" maxlength="500" required></textarea>
+                    </div>
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label>Option A <span class="required">*</span></label>
+                            <input type="text" id="optionA" placeholder="Option A" maxlength="200" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Option B <span class="required">*</span></label>
+                            <input type="text" id="optionB" placeholder="Option B" maxlength="200" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Option C <span class="optional">(optional)</span></label>
+                            <input type="text" id="optionC" placeholder="Option C" maxlength="200">
+                        </div>
+                        <div class="form-group">
+                            <label>Option D <span class="optional">(optional)</span></label>
+                            <input type="text" id="optionD" placeholder="Option D" maxlength="200">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Correct Answer <span class="required">*</span></label>
+                        <select id="correctOption" required>
+                            <option value="">-- Select --</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Question</button>
+                </form>
+                <p class="msg" id="questionMsg"></p>
+            </div>
+
+            <!-- Questions list -->
+            <div class="card">
+                <h3>Questions (<span id="questionCount">0</span>)</h3>
+                <div id="questionList"><p class="empty-msg">No questions yet.</p></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/quiz-manage.js"></script>
+</body>
+</html>
