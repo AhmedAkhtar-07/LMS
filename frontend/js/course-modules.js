@@ -104,7 +104,6 @@ function buildModuleHTML(mod) {
     return `
     <div class="module-item" id="module-${mod.module_id}">
         <div class="module-header" onclick="toggleModule(${mod.module_id})">
-            <div class="order-badge">${mod.module_order}</div>
             <div class="module-info">
                 <div class="module-title-text">${escapeHtml(mod.title)}</div>
             </div>
@@ -159,7 +158,6 @@ document.getElementById('addModuleForm').addEventListener('submit', async functi
     e.preventDefault();
 
     const title        = document.getElementById('moduleTitle').value.trim();
-    const module_order = document.getElementById('moduleOrder').value;
     const videoUrl     = document.getElementById('videoUrl').value.trim();
     const announcement = document.getElementById('announcement').value.trim();
     const pdfFile      = document.getElementById('pdfFile').files[0];
@@ -168,11 +166,6 @@ document.getElementById('addModuleForm').addEventListener('submit', async functi
     const msg          = document.getElementById('msg');
 
     if (!title) { msg.textContent = 'Module title is required.'; msg.className = 'msg error'; return; }
-
-    const order = parseInt(module_order);
-    if (!module_order || isNaN(order) || order < 1) {
-        msg.textContent = 'Order must be a positive number.'; msg.className = 'msg error'; return;
-    }
 
     if (videoUrl) {
         try { new URL(videoUrl); }
@@ -187,9 +180,8 @@ document.getElementById('addModuleForm').addEventListener('submit', async functi
     }
 
     const formData = new FormData();
-    formData.append('course_id',    courseId);
-    formData.append('title',        title);
-    formData.append('module_order', order);
+    formData.append('course_id', courseId);
+    formData.append('title',     title);
     if (pdfFile)      formData.append('pdf_file',     pdfFile);
     if (videoUrl)     formData.append('video_url',    videoUrl);
     if (announcement) formData.append('announcement', announcement);
@@ -258,17 +250,40 @@ async function loadEnrolledStudents() {
     }
     listEl.innerHTML = `
         <table class="students-table">
-            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Enrolled</th></tr></thead>
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Enrolled</th><th>Action</th></tr></thead>
             <tbody>${data.map((s, i) => `
-                <tr>
+                <tr id="enroll-row-${s.enrollment_id}">
                     <td>${i + 1}</td>
                     <td>${escapeHtml(s.name)}</td>
                     <td>${escapeHtml(s.email)}</td>
-                    <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+                    <td><span class="status-badge status-${s.status}" id="status-badge-${s.enrollment_id}">${s.status}</span></td>
                     <td>${new Date(s.enroll_date).toLocaleDateString()}</td>
+                    <td>
+                        ${s.status !== 'completed'
+                            ? `<button class="btn-pass-student" onclick="markStudentPassed(${s.enrollment_id}, this)">Mark Passed</button>`
+                            : `<span class="passed-label">Passed</span>`
+                        }
+                    </td>
                 </tr>`).join('')}
             </tbody>
         </table>`;
+}
+
+async function markStudentPassed(enrollmentId, btn) {
+    if (!confirm('Mark this student as passed? This will allow them to claim a certificate.')) return;
+    btn.disabled    = true;
+    btn.textContent = 'Saving...';
+    const res  = await apiPatch(`/enrollments/${enrollmentId}/status`, { status: 'completed' });
+    const data = await res.json();
+    if (res.ok) {
+        const badge = document.getElementById(`status-badge-${enrollmentId}`);
+        if (badge) { badge.textContent = 'completed'; badge.className = 'status-badge status-completed'; }
+        btn.replaceWith(Object.assign(document.createElement('span'), { className: 'passed-label', textContent: 'Passed' }));
+    } else {
+        btn.disabled    = false;
+        btn.textContent = 'Mark Passed';
+        alert(data.message);
+    }
 }
 
 function toggleEnrolledList() {

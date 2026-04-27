@@ -188,6 +188,36 @@ router.get('/course/:course_id', loginRequired, async (req, res) => {
     }
 });
 
+// ── UPDATE ENROLLMENT STATUS (instructor marks student as passed/dropped) ──────
+router.patch('/:enrollment_id/status', instructorOnly, async (req, res) => {
+    const { enrollment_id } = req.params;
+    const { status }        = req.body;
+    const instructor_id     = req.user.user_id;
+
+    if (!['active', 'completed', 'dropped'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status. Use active, completed, or dropped.' });
+    }
+
+    try {
+        const [rows] = await db.query(
+            `SELECT e.enrollment_id FROM Enrollments e
+             JOIN Courses c ON c.course_id = e.course_id
+             WHERE e.enrollment_id = ? AND c.instructor_id = ?`,
+            [enrollment_id, instructor_id]
+        );
+        if (rows.length === 0) {
+            return res.status(403).json({ message: 'Enrollment not found or access denied.' });
+        }
+
+        await db.query('UPDATE Enrollments SET status = ? WHERE enrollment_id = ?', [status, enrollment_id]);
+        res.json({ message: 'Enrollment status updated.' });
+
+    } catch (err) {
+        console.error('Update enrollment status error:', err);
+        res.status(500).json({ message: 'Server error.' });
+    }
+});
+
 // ── UNENROLL ──────────────────────────────────────────────────────────────────
 router.delete('/:enrollment_id', loginRequired, async (req, res) => {
     const { enrollment_id } = req.params;

@@ -77,13 +77,30 @@ router.get('/module/:module_id', loginRequired, async (req, res) => {
 
         const quiz = quizRows[0];
 
-        const [questions] = await db.query(
-            `SELECT question_id, question_text,
-                    option_a, option_b, option_c, option_d
-                    ${role === 'instructor' ? ', correct_option' : ''}
-             FROM Questions WHERE quiz_id = ? ORDER BY question_id ASC`,
+        const [rows] = await db.query(
+            `SELECT q.question_id, q.question_text,
+                    ${role === 'instructor' ? 'q.correct_option,' : ''}
+                    o.option_label, o.option_text
+             FROM Questions q
+             JOIN QuestionOptions o ON o.question_id = q.question_id
+             WHERE q.quiz_id = ?
+             ORDER BY q.question_id ASC, o.option_label ASC`,
             [quiz.quiz_id]
         );
+
+        // Reshape joined rows into one object per question with option_a/b/c/d keys
+        const questionsMap = {};
+        for (const row of rows) {
+            if (!questionsMap[row.question_id]) {
+                questionsMap[row.question_id] = {
+                    question_id:   row.question_id,
+                    question_text: row.question_text,
+                    ...(role === 'instructor' ? { correct_option: row.correct_option } : {})
+                };
+            }
+            questionsMap[row.question_id][`option_${row.option_label.toLowerCase()}`] = row.option_text;
+        }
+        const questions = Object.values(questionsMap);
 
         res.json({ ...quiz, questions });
 
@@ -133,16 +150,25 @@ router.post('/:quiz_id/questions', instructorOnly, async (req, res) => {
         }
 
         const [result] = await db.query(
-            `INSERT INTO Questions
-             (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [quiz_id, question_text.trim(), option_a.trim(), option_b.trim(),
-             option_c ? option_c.trim() : null,
-             option_d ? option_d.trim() : null,
-             co]
+            `INSERT INTO Questions (quiz_id, question_text, correct_option) VALUES (?, ?, ?)`,
+            [quiz_id, question_text.trim(), co]
         );
 
-        res.status(201).json({ message: 'Question added.', question_id: result.insertId });
+        const qid = result.insertId;
+
+        // Insert each option as its own row in QuestionOptions
+        const optionRows = [
+            [qid, 'A', option_a.trim()],
+            [qid, 'B', option_b.trim()],
+            ...(option_c && option_c.trim() ? [[qid, 'C', option_c.trim()]] : []),
+            ...(option_d && option_d.trim() ? [[qid, 'D', option_d.trim()]] : [])
+        ];
+        await db.query(
+            `INSERT INTO QuestionOptions (question_id, option_label, option_text) VALUES ?`,
+            [optionRows]
+        );
+
+        res.status(201).json({ message: 'Question added.', question_id: qid });
 
     } catch (err) {
         console.error('Add question error:', err);
