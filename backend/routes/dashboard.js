@@ -72,7 +72,10 @@ router.get('/student', loginRequired, async (req, res) => {
                 (SELECT cert.certificate_id
                  FROM   Certificates cert
                  WHERE  cert.student_id = ? AND cert.course_id = c.course_id
-                 LIMIT  1)                               AS certificate_id
+                 LIMIT  1)                               AS certificate_id,
+
+                e.enrollment_id,
+                e.status                                AS enrollment_status
 
             FROM  Enrollments e
             JOIN  Courses c ON c.course_id = e.course_id
@@ -86,8 +89,8 @@ router.get('/student', loginRequired, async (req, res) => {
             c.progress_pct = c.total_quizzes > 0
                 ? Math.round((c.attempted_quizzes / c.total_quizzes) * 100)
                 : 0;
-            // Eligible = has quizzes AND passed all of them
-            c.eligible = c.total_quizzes > 0 && c.passed_quizzes >= c.total_quizzes;
+            // Eligible = instructor marked as completed (they verified the student)
+            c.eligible = c.enrollment_status === 'completed';
         });
 
         // Overall summary

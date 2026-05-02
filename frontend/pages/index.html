@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS — Learning Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-brand">LMS</div>
+    <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#progress">Progress</a>
+        <a href="/pages/login.html" class="btn-outline">Login</a>
+        <a href="/pages/register.html" class="btn-primary">Register</a>
+    </div>
+</nav>
+<section class="hero">
+    <div class="hero-text">
+        <span class="badge">Online Learning Platform</span>
+        <h1>Your Campus.<br>Now Online.</h1>
+        <p>Manage courses, track progress, attempt quizzes, and earn certificates — all in one place for students and instructors.</p>
+        <div class="hero-buttons">
+            <a href="/pages/register.html?role=student" class="btn-primary">Join as Student</a>
+            <a href="/pages/register.html?role=instructor" class="btn-outline">Join as Instructor</a>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <svg class="hero-svg" viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
+            <rect width="420" height="300" rx="16" fill="#e8f5f0"/>
+            <rect x="20" y="20" width="260" height="170" rx="10" fill="#ffffff" stroke="#b2dfdb" stroke-width="1.5"/>
+            <rect x="20" y="20" width="260" height="36" rx="10" fill="#0d7a5f"/>
+            <rect x="20" y="46" width="260" height="10" rx="0" fill="#0d7a5f"/>
+            <circle cx="36" cy="38" r="5" fill="rgba(255,255,255,0.4)"/>
+            <circle cx="52" cy="38" r="5" fill="rgba(255,255,255,0.4)"/>
+            <circle cx="68" cy="38" r="5" fill="rgba(255,255,255,0.4)"/>
+            <text x="90" y="43" font-family="Poppins,sans-serif" font-size="11" fill="white" font-weight="600">LMS Dashboard</text>
+            <rect x="34" y="68" width="100" height="8" rx="4" fill="#e5e7eb"/>
+            <rect x="34" y="82" width="70" height="6" rx="3" fill="#f3f4f6"/>
+            <rect x="34" y="100" width="110" height="46" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+            <rect x="42" y="110" width="60" height="6" rx="3" fill="#0d7a5f"/>
+            <rect x="42" y="122" width="45" height="5" rx="2.5" fill="#9ca3af"/>
+            <rect x="154" y="100" width="110" height="46" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+            <rect x="162" y="110" width="60" height="6" rx="3" fill="#0d7a5f"/>
+            <rect x="162" y="122" width="45" height="5" rx="2.5" fill="#9ca3af"/>
+            <rect x="34" y="158" width="230" height="6" rx="3" fill="#e5e7eb"/>
+            <rect x="34" y="158" width="130" height="6" rx="3" fill="#0d7a5f"/>
+            <rect x="300" y="20" width="100" height="170" rx="10" fill="#ffffff" stroke="#b2dfdb" stroke-width="1.5"/>
+            <rect x="312" y="34" width="76" height="7" rx="3.5" fill="#0d7a5f"/>
+            <rect x="312" y="48" width="55" height="5" rx="2.5" fill="#d1fae5"/>
+            <rect x="312" y="60" width="76" height="5" rx="2.5" fill="#e5e7eb"/>
+            <rect x="312" y="72" width="60" height="5" rx="2.5" fill="#e5e7eb"/>
+            <rect x="312" y="90" width="76" height="38" rx="7" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1"/>
+            <rect x="320" y="100" width="50" height="5" rx="2.5" fill="#0d7a5f"/>
+            <rect x="320" y="112" width="35" height="4" rx="2" fill="#9ca3af"/>
+            <rect x="312" y="136" width="76" height="38" rx="7" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+            <rect x="320" y="146" width="50" height="5" rx="2.5" fill="#0d7a5f"/>
+            <rect x="320" y="158" width="35" height="4" rx="2" fill="#9ca3af"/>
+            <rect x="60" y="210" width="160" height="70" rx="10" fill="#ffffff" stroke="#b2dfdb" stroke-width="1.5"/>
+            <rect x="72" y="224" width="80" height="7" rx="3.5" fill="#111827"/>
+            <rect x="72" y="238" width="100" height="5" rx="2.5" fill="#e5e7eb"/>
+            <rect x="72" y="250" width="80" height="5" rx="2.5" fill="#e5e7eb"/>
+            <rect x="72" y="265" width="50" height="7" rx="3.5" fill="#0d7a5f"/>
+            <rect x="240" y="210" width="140" height="70" rx="10" fill="#0d7a5f"/>
+            <rect x="254" y="224" width="70" height="7" rx="3.5" fill="white"/>
+            <rect x="254" y="238" width="100" height="5" rx="2.5" fill="rgba(255,255,255,0.4)"/>
+            <rect x="254" y="250" width="80" height="5" rx="2.5" fill="rgba(255,255,255,0.4)"/>
+            <rect x="254" y="265" width="55" height="7" rx="3.5" fill="rgba(255,255,255,0.9)"/>
+        </svg>
+    </div>
+</section>
+<section class="features" id="features">
+    <div class="section-header">
+        <h2>Everything in One Place</h2>
+        <p>Built for both instructors and students — simple, focused, and ready to use.</p>
+    </div>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-label">01</div>
+            <h3>Course Creation</h3>
+            <p>Instructors create courses, add structured modules, and upload learning materials for students to access anytime.</p>
+            <div class="feature-tags">
+                <span class="tag">Modules</span>
+                <span class="tag">Materials</span>
+            </div>
+        </div>
+        <div class="feature-card accent">
+            <div class="feature-label light">02</div>
+            <h3>MCQ Quizzes</h3>
+            <p>Create multiple-choice quizzes per module. Students attempt them and results are recorded for tracking performance.</p>
+            <div class="feature-tags">
+                <span class="tag light">Per Module</span>
+                <span class="tag light">Scored</span>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-label">03</div>
+            <h3>Auto-Grading</h3>
+            <p>Quiz submissions are graded the moment a student submits — no manual marking. Scores are saved automatically.</p>
+            <div class="feature-tags">
+                <span class="tag">Instant Results</span>
+                <span class="tag">Score History</span>
+            </div>
+        </div>
+        <div class="feature-card accent">
+            <div class="feature-label light">04</div>
+            <h3>Enrollment System</h3>
+            <p>Students browse available courses and enroll with one click. Instructors see who is enrolled in their courses.</p>
+            <div class="feature-tags">
+                <span class="tag light">Browse</span>
+                <span class="tag light">One-click Enroll</span>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="progress-section" id="progress">
+    <div class="progress-text">
+        <h2>Know Where You Stand</h2>
+        <p>Every student gets a clear view of their learning journey.</p>
+        <div class="progress-item">
+            <div class="pi-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 10h16M10 2v16" stroke="#0d7a5f" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+                <h4>Progress Dashboard</h4>
+                <p>See completed modules, quiz scores, and overall course progress — all on one screen.</p>
+            </div>
+        </div>
+        <div class="progress-item">
+            <div class="pi-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#0d7a5f" stroke-width="2"/><path d="M6 5V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1" stroke="#0d7a5f" stroke-width="2"/><path d="M7 10l2 2 4-4" stroke="#0d7a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+                <h4>Certificate on Completion</h4>
+                <p>Complete a course with passing grades and receive a printable certificate stored in your profile.</p>
+            </div>
+        </div>
+        <div class="progress-item">
+            <div class="pi-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#0d7a5f" stroke-width="2"/><path d="M10 6v4l3 3" stroke="#0d7a5f" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+                <h4>Quiz Attempt History</h4>
+                <p>Review past quiz attempts and scores. Students can track improvement over time.</p>
+            </div>
+        </div>
+    </div>
+    <div class="progress-visual">
+        <div class="pv-card">
+            <div class="pv-header">My Courses</div>
+            <div class="pv-course">
+                <div class="pv-course-info">
+                    <span class="pv-course-name">Data Structures</span>
+                    <span class="pv-status enrolled">Enrolled</span>
+                </div>
+                <div class="pv-bar-track"><div class="pv-bar" style="width:68%"></div></div>
+            </div>
+            <div class="pv-course">
+                <div class="pv-course-info">
+                    <span class="pv-course-name">Web Engineering</span>
+                    <span class="pv-status enrolled">Enrolled</span>
+                </div>
+                <div class="pv-bar-track"><div class="pv-bar" style="width:40%"></div></div>
+            </div>
+            <div class="pv-course">
+                <div class="pv-course-info">
+                    <span class="pv-course-name">OOP Concepts</span>
+                    <span class="pv-status complete">Complete</span>
+                </div>
+                <div class="pv-bar-track"><div class="pv-bar" style="width:100%"></div></div>
+            </div>
+            <div class="pv-cert">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#0d7a5f" stroke-width="2"/><path d="M7 10l2 2 4-4" stroke="#0d7a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Certificate issued for OOP Concepts
+            </div>
+        </div>
+    </div>
+</section>
+<section class="cta">
+    <h2>Ready to Begin?</h2>
+    <p>Register as a student to enroll in courses, or as an instructor to start building your course today.</p>
+    <div class="cta-buttons">
+        <a href="/pages/register.html" class="btn-white">Create Account</a>
+        <a href="/pages/login.html" class="btn-outline-white">Login</a>
+    </div>
+</section>
+<footer class="footer">
+    <div class="footer-brand">LMS</div>
+    <div class="footer-info">&copy; 2026 Learning Management System</div>
+    <div class="footer-links">
+        <a href="/pages/login.html">Login</a>
+        <a href="/pages/register.html">Register</a>
+    </div>
+</footer>
+</body>
+</html>

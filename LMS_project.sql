@@ -13,6 +13,7 @@
      7.  Materials
      8.  Quizzes
      9.  Questions
+     9b. QuestionOptions
      10. Enrollments
      11. Progress
      12. QuizAttempts
@@ -37,10 +38,9 @@
      Storing department name as a plain VARCHAR in profiles would
      create an update anomaly — fixing 3NF by extracting it here.
 
-   • Questions stores MCQ options as 4 columns (option_a … option_d).
-     A fully normalised design would use a separate QuestionOptions
-     table, but for this project scope the column approach is simpler
-     and easier to query without sacrificing correctness.
+   • Questions stores only the question text and correct_option.
+     MCQ choices are stored in QuestionOptions (one row per option)
+     so the schema satisfies 1NF — no repeating option columns.
    ============================================================= */
 
 
@@ -122,6 +122,7 @@ CREATE TABLE Courses (
     title         VARCHAR(200) NOT NULL,
     description   TEXT,
     instructor_id INT          NOT NULL,
+    join_code     VARCHAR(10)  UNIQUE,
 
     FOREIGN KEY (instructor_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
@@ -183,23 +184,39 @@ CREATE INDEX idx_quizzes_module ON Quizzes(module_id);
 
 /* ── 9. QUESTIONS ─────────────────────────────────────────── */
 -- MCQ questions belonging to a quiz.
--- Options A and B are required; C and D are optional.
+-- Options are stored in QuestionOptions (see table 9b) — 1NF compliant.
 -- correct_option stores the letter of the right answer.
 
 CREATE TABLE Questions (
-    question_id    INT          PRIMARY KEY AUTO_INCREMENT,
-    quiz_id        INT          NOT NULL,
-    question_text  TEXT         NOT NULL,
-    option_a       VARCHAR(200) NOT NULL,
-    option_b       VARCHAR(200) NOT NULL,
-    option_c       VARCHAR(200),                  -- optional
-    option_d       VARCHAR(200),                  -- optional
-    correct_option CHAR(1)      NOT NULL CHECK (correct_option IN ('A', 'B', 'C', 'D')),
+    question_id    INT     PRIMARY KEY AUTO_INCREMENT,
+    quiz_id        INT     NOT NULL,
+    question_text  TEXT    NOT NULL,
+    correct_option CHAR(1) NOT NULL CHECK (correct_option IN ('A', 'B', 'C', 'D')),
 
     FOREIGN KEY (quiz_id) REFERENCES Quizzes(quiz_id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_questions_quiz ON Questions(quiz_id);
+
+
+/* ── 9b. QUESTION OPTIONS ─────────────────────────────────── */
+-- Each option (A/B/C/D) for a question lives here as its own row.
+-- Replaces the old option_a … option_d columns — satisfies 1NF.
+-- A minimum of 2 options (A and B) must be inserted by the application.
+-- UNIQUE prevents duplicate labels per question.
+
+CREATE TABLE QuestionOptions (
+    option_id    INT          PRIMARY KEY AUTO_INCREMENT,
+    question_id  INT          NOT NULL,
+    option_label CHAR(1)      NOT NULL CHECK (option_label IN ('A', 'B', 'C', 'D')),
+    option_text  VARCHAR(200) NOT NULL,
+
+    UNIQUE (question_id, option_label),
+
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_options_question ON QuestionOptions(question_id);
 
 
 /* ── 10. ENROLLMENTS ──────────────────────────────────────── */

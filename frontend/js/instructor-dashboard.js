@@ -44,8 +44,8 @@ function renderCourses(courses) {
             <div class="card-body" onclick="openCourse(${c.course_id})">
                 <h3>${escapeHtml(c.title)}</h3>
                 <div class="card-meta-row">
-                    <span class="meta-chip">👥 ${c.enrolled_count} student${c.enrolled_count !== 1 ? 's' : ''}</span>
-                    <span class="meta-chip">📝 ${c.quiz_count} quiz${c.quiz_count !== 1 ? 'zes' : ''}</span>
+                    <span class="meta-chip">${c.enrolled_count} student${c.enrolled_count !== 1 ? 's' : ''}</span>
+                    <span class="meta-chip">${c.quiz_count} quiz${c.quiz_count !== 1 ? 'zes' : ''}</span>
                 </div>
                 <p class="card-link">Manage Modules →</p>
             </div>

@@ -1,4 +1,4 @@
-// course-modules.js — load course/modules/materials, create module, delete
+// course-modules.js
 
 const params   = new URLSearchParams(window.location.search);
 const courseId = params.get('course_id');
@@ -7,7 +7,7 @@ let   userRole = null;
 async function init() {
     if (!courseId) { window.location.href = '/pages/login.html'; return; }
 
-    const user = await requireAuth(); // any logged-in user
+    const user = await requireAuth();
     if (!user) return;
 
     userRole = user.role;
@@ -29,9 +29,7 @@ async function init() {
 async function checkEnrollment() {
     const res  = await apiGet(`/enrollments/check/${courseId}`);
     const data = await res.json();
-
     if (!res.ok || !data.enrolled) {
-        // Show enroll banner above module list
         document.getElementById('enrollBanner').style.display = 'flex';
     }
 }
@@ -42,11 +40,9 @@ async function loadCourse() {
     if (!res.ok) { document.getElementById('courseTitle').textContent = 'Course not found'; return; }
     document.getElementById('courseTitle').textContent = data.title;
     document.getElementById('courseDesc').textContent  = data.description || '';
-
-    // Show join code badge to instructors
     if (userRole === 'instructor' && data.join_code) {
-        document.getElementById('courseJoinCode').textContent = data.join_code;
-        document.getElementById('joinCodeBadge').style.display = 'flex';
+        document.getElementById('courseJoinCode').textContent     = data.join_code;
+        document.getElementById('joinCodeBadge').style.display    = 'flex';
     }
 }
 
@@ -63,84 +59,98 @@ async function loadModules() {
     const res  = await apiGet(`/modules/course/${courseId}`);
     const data = await res.json();
     const list = document.getElementById('moduleList');
-
     if (!res.ok) { list.innerHTML = '<p class="empty-msg">Failed to load modules.</p>'; return; }
     if (data.length === 0) { list.innerHTML = '<p class="empty-msg">No modules yet.</p>'; return; }
-
     list.innerHTML = data.map(mod => buildModuleHTML(mod)).join('');
 }
 
 function buildModuleHTML(mod) {
     const deleteBtn = userRole === 'instructor'
-        ? `<button class="btn-delete-module" onclick="deleteModule(${mod.module_id})">Delete Module</button>`
+        ? `<button class="btn-delete-module" onclick="event.stopPropagation(); deleteModule(${mod.module_id})">Delete</button>`
         : '';
 
     const materialsHTML = mod.materials.length === 0
         ? '<p class="no-materials">No materials attached.</p>'
         : mod.materials.map(mat => buildMaterialHTML(mat)).join('');
 
-    // Quiz section — instructor sees Manage Quiz, student sees View Quiz
     let quizHTML = '';
     if (userRole === 'instructor') {
         quizHTML = mod.quiz
             ? `<div class="quiz-bar">
-                   <span class="quiz-label">📝 ${escapeHtml(mod.quiz.title)}</span>
-                   <a class="btn-quiz" href="/pages/quiz-manage.html?module_id=${mod.module_id}&course_id=${courseId}">Manage Quiz</a>
+                   <div class="quiz-bar-left">
+                       <span class="quiz-type-badge">Quiz</span>
+                       <span class="quiz-label">${escapeHtml(mod.quiz.title)}</span>
+                   </div>
+                   <a class="btn-quiz" href="/pages/quiz-manage.html?module_id=${mod.module_id}&course_id=${courseId}">Manage</a>
                </div>`
             : `<div class="quiz-bar quiz-bar--empty">
-                   <span class="quiz-label no-quiz">No quiz yet</span>
-                   <a class="btn-quiz" href="/pages/quiz-manage.html?module_id=${mod.module_id}&course_id=${courseId}">+ Create Quiz</a>
+                   <div class="quiz-bar-left">
+                       <span class="quiz-label no-quiz">No quiz attached</span>
+                   </div>
+                   <a class="btn-quiz create" href="/pages/quiz-manage.html?module_id=${mod.module_id}&course_id=${courseId}">+ Add Quiz</a>
                </div>`;
     } else {
         quizHTML = mod.quiz
             ? `<div class="quiz-bar">
-                   <span class="quiz-label">📝 ${escapeHtml(mod.quiz.title)}</span>
-                   <a class="btn-quiz" href="/pages/quiz-view.html?module_id=${mod.module_id}&course_id=${courseId}">View Quiz</a>
+                   <div class="quiz-bar-left">
+                       <span class="quiz-type-badge">Quiz</span>
+                       <span class="quiz-label">${escapeHtml(mod.quiz.title)}</span>
+                   </div>
+                   <a class="btn-quiz" href="/pages/quiz-view.html?module_id=${mod.module_id}&course_id=${courseId}">Attempt Quiz</a>
                </div>`
             : '';
     }
 
     return `
-        <div class="module-item" id="module-${mod.module_id}">
-            <div class="module-header">
-                <div class="order-badge">${mod.module_order}</div>
-                <div class="module-info">
-                    <div class="module-title-text">${escapeHtml(mod.title)}</div>
-                    <div class="module-id-text">Module ID: ${mod.module_id}</div>
-                </div>
-                ${deleteBtn}
+    <div class="module-item" id="module-${mod.module_id}">
+        <div class="module-header" onclick="toggleModule(${mod.module_id})">
+            <div class="module-info">
+                <div class="module-title-text">${escapeHtml(mod.title)}</div>
             </div>
-            <div class="materials-body">${materialsHTML}</div>
+            ${deleteBtn}
+            <span class="module-chevron">▼</span>
+        </div>
+        <div class="module-body">
+            <div class="materials-body">
+                <div class="materials-title">Materials</div>
+                ${materialsHTML}
+            </div>
             ${quizHTML}
-        </div>`;
+        </div>
+    </div>`;
+}
+
+function toggleModule(moduleId) {
+    const item = document.getElementById(`module-${moduleId}`);
+    if (item) item.classList.toggle('open');
 }
 
 function buildMaterialHTML(mat) {
     const deleteBtn = userRole === 'instructor'
-        ? `<button class="btn-delete-mat" onclick="deleteMaterial(${mat.material_id})">✕</button>`
+        ? `<button class="btn-delete-mat" onclick="deleteMaterial(${mat.material_id})">Remove</button>`
         : '';
 
-    let icon, label, contentHTML;
+    let iconText, label, contentHTML;
     if (mat.type === 'pdf') {
-        icon = '📄'; label = 'Document';
+        iconText = 'PDF'; label = 'Document';
         contentHTML = `<a href="${mat.file_url}" target="_blank">${escapeHtml(mat.title)}</a>`;
     } else if (mat.type === 'video') {
-        icon = '▶'; label = 'Video';
+        iconText = 'VID'; label = 'Video';
         contentHTML = `<a href="${escapeHtml(mat.content)}" target="_blank">${escapeHtml(mat.content)}</a>`;
     } else {
-        icon = '📢'; label = 'Announcement';
+        iconText = 'ANN'; label = 'Announcement';
         contentHTML = `<p>${escapeHtml(mat.content)}</p>`;
     }
 
     return `
-        <div class="material-row" id="material-${mat.material_id}">
-            <div class="material-icon ${mat.type}">${icon}</div>
-            <div class="material-content">
-                <div class="material-label">${label}</div>
-                ${contentHTML}
-            </div>
-            ${deleteBtn}
-        </div>`;
+    <div class="material-row" id="material-${mat.material_id}">
+        <div class="material-icon ${mat.type}">${iconText}</div>
+        <div class="material-content">
+            <div class="material-label">${label}</div>
+            ${contentHTML}
+        </div>
+        ${deleteBtn}
+    </div>`;
 }
 
 // ── Add Module Form ───────────────────────────────────────────────────────────
@@ -148,18 +158,14 @@ document.getElementById('addModuleForm').addEventListener('submit', async functi
     e.preventDefault();
 
     const title        = document.getElementById('moduleTitle').value.trim();
-    const module_order = document.getElementById('moduleOrder').value;
     const videoUrl     = document.getElementById('videoUrl').value.trim();
     const announcement = document.getElementById('announcement').value.trim();
     const pdfFile      = document.getElementById('pdfFile').files[0];
+    const quizTitle    = document.getElementById('newQuizTitle').value.trim();
+    const passingScore = document.getElementById('newPassingScore').value;
     const msg          = document.getElementById('msg');
 
     if (!title) { msg.textContent = 'Module title is required.'; msg.className = 'msg error'; return; }
-
-    const order = parseInt(module_order);
-    if (!module_order || isNaN(order) || order < 1) {
-        msg.textContent = 'Order must be a positive number.'; msg.className = 'msg error'; return;
-    }
 
     if (videoUrl) {
         try { new URL(videoUrl); }
@@ -173,11 +179,9 @@ document.getElementById('addModuleForm').addEventListener('submit', async functi
         }
     }
 
-    // Use FormData for file upload
     const formData = new FormData();
-    formData.append('course_id',    courseId);
-    formData.append('title',        title);
-    formData.append('module_order', order);
+    formData.append('course_id', courseId);
+    formData.append('title',     title);
     if (pdfFile)      formData.append('pdf_file',     pdfFile);
     if (videoUrl)     formData.append('video_url',    videoUrl);
     if (announcement) formData.append('announcement', announcement);
@@ -185,15 +189,30 @@ document.getElementById('addModuleForm').addEventListener('submit', async functi
     const res  = await apiPostForm('/modules', formData);
     const data = await res.json();
 
-    if (res.ok) {
-        msg.textContent = data.message;
-        msg.className   = 'msg success';
-        document.getElementById('addModuleForm').reset();
-        loadModules();
-    } else {
-        msg.textContent = data.message;
-        msg.className   = 'msg error';
+    if (!res.ok) { msg.textContent = data.message; msg.className = 'msg error'; return; }
+
+    // Optionally create a quiz for this module
+    if (quizTitle) {
+        const score = parseInt(passingScore) || 50;
+        const qRes  = await apiPost('/quizzes', {
+            module_id:     data.module_id,
+            title:         quizTitle,
+            passing_score: score
+        });
+        const qData = await qRes.json();
+        if (!qRes.ok) {
+            msg.textContent = `Module created, but quiz failed: ${qData.message}`;
+            msg.className   = 'msg error';
+            document.getElementById('addModuleForm').reset();
+            loadModules();
+            return;
+        }
     }
+
+    msg.textContent = quizTitle ? 'Module and quiz created!' : data.message;
+    msg.className   = 'msg success';
+    document.getElementById('addModuleForm').reset();
+    loadModules();
 });
 
 async function deleteModule(moduleId) {
@@ -217,55 +236,70 @@ async function deleteMaterial(materialId) {
     } else { alert(data.message); }
 }
 
-// ── Enrolled Students (instructor only) ──────────────────────────────────────
+// ── Enrolled Students ─────────────────────────────────────────────────────────
 async function loadEnrolledStudents() {
     const res  = await apiGet(`/enrollments/course/${courseId}`);
     const data = await res.json();
-
     const countEl = document.getElementById('enrolledCount');
     const listEl  = document.getElementById('enrolledStudentList');
-
     if (!res.ok) { countEl.textContent = ''; return; }
-
     countEl.textContent = `(${data.length})`;
-
     if (data.length === 0) {
         listEl.innerHTML = '<p class="empty-msg" style="padding:12px 0">No students enrolled yet.</p>';
         return;
     }
-
     listEl.innerHTML = `
         <table class="students-table">
-            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Enrolled</th></tr></thead>
-            <tbody>
-                ${data.map((s, i) => `
-                    <tr>
-                        <td>${i + 1}</td>
-                        <td>${escapeHtml(s.name)}</td>
-                        <td>${escapeHtml(s.email)}</td>
-                        <td><span class="status-badge status-${s.status}">${s.status}</span></td>
-                        <td>${new Date(s.enroll_date).toLocaleDateString()}</td>
-                    </tr>`).join('')}
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Status</th><th>Enrolled</th><th>Action</th></tr></thead>
+            <tbody>${data.map((s, i) => `
+                <tr id="enroll-row-${s.enrollment_id}">
+                    <td>${i + 1}</td>
+                    <td>${escapeHtml(s.name)}</td>
+                    <td>${escapeHtml(s.email)}</td>
+                    <td><span class="status-badge status-${s.status}" id="status-badge-${s.enrollment_id}">${s.status}</span></td>
+                    <td>${new Date(s.enroll_date).toLocaleDateString()}</td>
+                    <td>
+                        ${s.status !== 'completed'
+                            ? `<button class="btn-pass-student" onclick="markStudentPassed(${s.enrollment_id}, this)">Mark Passed</button>`
+                            : `<span class="passed-label">Passed</span>`
+                        }
+                    </td>
+                </tr>`).join('')}
             </tbody>
         </table>`;
+}
+
+async function markStudentPassed(enrollmentId, btn) {
+    if (!confirm('Mark this student as passed? This will allow them to claim a certificate.')) return;
+    btn.disabled    = true;
+    btn.textContent = 'Saving...';
+    const res  = await apiPatch(`/enrollments/${enrollmentId}/status`, { status: 'completed' });
+    const data = await res.json();
+    if (res.ok) {
+        const badge = document.getElementById(`status-badge-${enrollmentId}`);
+        if (badge) { badge.textContent = 'completed'; badge.className = 'status-badge status-completed'; }
+        btn.replaceWith(Object.assign(document.createElement('span'), { className: 'passed-label', textContent: 'Passed' }));
+    } else {
+        btn.disabled    = false;
+        btn.textContent = 'Mark Passed';
+        alert(data.message);
+    }
 }
 
 function toggleEnrolledList() {
     const list   = document.getElementById('enrolledStudentList');
     const toggle = document.getElementById('enrolledToggle');
     const shown  = list.style.display !== 'none';
-    list.style.display   = shown ? 'none' : 'block';
-    toggle.textContent   = shown ? '▼' : '▲';
+    list.style.display = shown ? 'none' : 'block';
+    toggle.textContent = shown ? '▼' : '▲';
 }
 
 async function enrollCourse() {
     const btn = document.getElementById('enrollBtn');
     btn.disabled    = true;
     btn.textContent = 'Enrolling...';
-
     const res  = await apiPost('/enrollments', { course_id: courseId });
     const data = await res.json();
-
     if (res.ok) {
         document.getElementById('enrollBanner').style.display = 'none';
     } else {

@@ -1,24 +1,40 @@
-/* base.css — shared styles used across all pages */
+/* base.css — shared foundation */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-/* ── Reset ── */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+    --primary:       #0d7a5f;
+    --primary-light: #10b981;
+    --primary-dark:  #065f46;
+    --text:          #0a0f0d;
+    --muted:         #4b5563;
+    --bg:            #f4faf7;
+    --surface:       #ffffff;
+    --border:        #d1fae5;
+    --border-soft:   #e5e7eb;
+    --green-tint:    #f0fdf4;
+    --radius:        10px;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #333;
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
 }
 
-/* ── Reusable message box (error / success) ── */
+h1, h2, h3, h4, h5 {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.25;
+}
+
 .msg {
     margin-top: 12px;
     text-align: center;
     font-size: 14px;
+    min-height: 18px;
 }
-
 .msg.error   { color: #dc2626; }
-.msg.success { color: #16a34a; }
+.msg.success { color: var(--primary); }

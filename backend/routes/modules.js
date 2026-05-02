@@ -30,16 +30,11 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 102
 
 // ── CREATE MODULE + OPTIONAL MATERIALS ────────────────────────────────────────
 router.post('/', instructorOnly, upload.single('pdf_file'), async (req, res) => {
-    const { course_id, title, module_order, video_url, announcement } = req.body;
+    const { course_id, title, video_url, announcement } = req.body;
     const instructor_id = req.user.user_id;
 
     if (!course_id || !title || !title.trim()) {
         return res.status(400).json({ message: 'Course and module title are required.' });
-    }
-
-    const order = parseInt(module_order);
-    if (!module_order || isNaN(order) || order < 1) {
-        return res.status(400).json({ message: 'Module order must be a positive number.' });
     }
 
     if (video_url && video_url.trim()) {
@@ -57,10 +52,12 @@ router.post('/', instructorOnly, upload.single('pdf_file'), async (req, res) => 
             return res.status(403).json({ message: 'Course not found or access denied.' });
         }
 
-        const [existing] = await db.query(
-            'SELECT module_id FROM Modules WHERE course_id = ? AND module_order = ?',
-            [course_id, order]
+        // Auto-assign order: max existing order + 1 (new modules go to top via DESC sort)
+        const [maxRow] = await db.query(
+            'SELECT COALESCE(MAX(module_order), 0) + 1 AS next_order FROM Modules WHERE course_id = ?',
+            [course_id]
         );
+        const order = maxRow[0].next_order;
 
         // Insert module
         const [moduleResult] = await db.query(
@@ -89,12 +86,7 @@ router.post('/', instructorOnly, upload.single('pdf_file'), async (req, res) => 
             );
         }
 
-        res.status(201).json({
-            message:   existing.length > 0
-                        ? 'Module created. Note: another module has the same order number.'
-                        : 'Module created successfully.',
-            module_id
-        });
+        res.status(201).json({ message: 'Module created successfully.', module_id });
 
     } catch (err) {
         console.error('Create module error:', err);
@@ -116,34 +108,33 @@ router.get('/course/:course_id', loginRequired, async (req, res) => {
              LEFT JOIN Materials mat ON mat.module_id = m.module_id
              LEFT JOIN Quizzes   q   ON q.module_id   = m.module_id
              WHERE m.course_id = ?
-             ORDER BY m.module_order ASC, m.module_id ASC, mat.material_id ASC`,
+             ORDER BY m.module_id DESC, mat.material_id ASC`,
             [course_id]
         );
 
-        // Group materials under their parent module, include quiz info
-        const modulesMap = {};
+        // Group materials under their parent module — use Map to preserve DESC query order
+        const modulesMap = new Map();
         for (const row of rows) {
-            if (!modulesMap[row.module_id]) {
-                modulesMap[row.module_id] = {
+            if (!modulesMap.has(row.module_id)) {
+                modulesMap.set(row.module_id, {
                     module_id:    row.module_id,
                     title:        row.module_title,
                     module_order: row.module_order,
                     materials:    [],
-                    // quiz is null if module has no quiz
                     quiz: row.quiz_id
                         ? { quiz_id: row.quiz_id, title: row.quiz_title, passing_score: row.passing_score }
                         : null
-                };
+                });
             }
             if (row.material_id) {
-                modulesMap[row.module_id].materials.push({
+                modulesMap.get(row.module_id).materials.push({
                     material_id: row.material_id, title: row.material_title,
                     type: row.type, content: row.content, file_url: row.file_url
                 });
             }
         }
 
-        res.json(Object.values(modulesMap));
+        res.json([...modulesMap.values()]);
 
     } catch (err) {
         console.error('Fetch modules error:', err);

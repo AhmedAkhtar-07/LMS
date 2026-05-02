@@ -39,57 +39,19 @@ router.post('/generate/:course_id', loginRequired, async (req, res) => {
             });
         }
 
-        // 2. Must be enrolled
+        // 2. Must be enrolled and marked as completed by the instructor
         const [enrolled] = await db.query(
-            'SELECT enrollment_id FROM Enrollments WHERE student_id = ? AND course_id = ?',
+            'SELECT enrollment_id, status FROM Enrollments WHERE student_id = ? AND course_id = ?',
             [student_id, course_id]
         );
         if (enrolled.length === 0) {
             return res.status(403).json({ message: 'You are not enrolled in this course.' });
         }
-
-        // 3. Count total quizzes in the course
-        const [totalRow] = await db.query(
-            `SELECT COUNT(*) AS total
-             FROM   Modules m
-             JOIN   Quizzes q ON q.module_id = m.module_id
-             WHERE  m.course_id = ?`,
-            [course_id]
-        );
-        const totalQuizzes = totalRow[0].total;
-
-        if (totalQuizzes === 0) {
-            return res.status(400).json({
-                message: 'This course has no quizzes. Complete all quizzes to earn a certificate.'
-            });
+        if (enrolled[0].status !== 'completed') {
+            return res.status(400).json({ message: 'Your instructor has not marked you as passed yet.' });
         }
 
-        // 4. Count quizzes where student's best score >= passing_score
-        const [passedRow] = await db.query(
-            `SELECT COUNT(*) AS passed
-             FROM (
-                 SELECT qa.quiz_id, MAX(qa.score) AS best_score, q.passing_score
-                 FROM   QuizAttempts qa
-                 JOIN   Quizzes      q  ON q.quiz_id   = qa.quiz_id
-                 JOIN   Modules      m  ON m.module_id = q.module_id
-                 WHERE  m.course_id = ? AND qa.student_id = ?
-                 GROUP BY qa.quiz_id, q.passing_score
-                 HAVING MAX(qa.score) >= q.passing_score
-             ) AS passed_quizzes`,
-            [course_id, student_id]
-        );
-        const passedQuizzes = passedRow[0].passed;
-
-        if (passedQuizzes < totalQuizzes) {
-            const remaining = totalQuizzes - passedQuizzes;
-            return res.status(400).json({
-                message: `Not eligible yet. You need to pass ${remaining} more quiz${remaining > 1 ? 'zes' : ''}.`,
-                total_quizzes:  totalQuizzes,
-                passed_quizzes: passedQuizzes
-            });
-        }
-
-        // 5. All quizzes passed — issue certificate
+        // 3. Issue certificate — instructor approval is sufficient
         const [result] = await db.query(
             'INSERT INTO Certificates (student_id, course_id) VALUES (?, ?)',
             [student_id, course_id]

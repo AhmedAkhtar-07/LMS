@@ -41,6 +41,15 @@ function apiPostForm(url, formData) {
     });
 }
 
+// PATCH request with JSON body and auth header
+function apiPatch(url, body) {
+    return fetch(url, {
+        method:  'PATCH',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body:    JSON.stringify(body)
+    });
+}
+
 // DELETE request with auth header
 function apiDelete(url) {
     return fetch(url, { method: 'DELETE', headers: authHeaders() });
